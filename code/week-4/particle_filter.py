@@ -1,5 +1,8 @@
 import numpy as np
 from helpers import distance
+from math import pi, sqrt, exp, sin, cos
+from scipy.stats import multivariate_normal
+
 
 class ParticleFilter:
     def __init__(self, num_particles):
@@ -11,7 +14,7 @@ class ParticleFilter:
     #   (based on esimates of x, y, theta and their uncertainties from GPS)
     #   and all weights to 1.0.
     # Add Gaussian noise to each particle.
-    def initialize(self, x, y, theta, std_x, std_y, std_theta):
+    def initialize(self, x, y, theta, std_x, std_y, std_theta): # 각 particle의 위치, 각도, association, 가중치 초기화
         self.particles = []
         for i in range(self.num_particles):
             self.particles.append({
@@ -72,19 +75,46 @@ class ParticleFilter:
 
     # Update the weights of each particle using a multi-variate
     #   Gaussian distribution.
+#     def gauss_pdf(self,x,mu,s):
+#         return (1/(s*sqrt(2*pi)))*exp(-0.5*((x-mu)/s)**2)
+    
     def update_weights(self, sensor_range, std_landmark_x, std_landmark_y,
                        observations, map_landmarks):
-        # TODO: For each particle, do the following:
         # 1. Select the set of landmarks that are visible
         #    (within the sensor range).
+        
+        for p in self.particles:
+            associate = []
+            for idx,m in map_landmarks.items():
+                if distance(p,m) < sensor_range:
+                    associate.append({
+                        'id' : idx,
+                        'x' : m['x'],
+                        'y' : m['y']
+                        
+                    })
+                    
         # 2. Transform each observed landmark's coordinates from the
         #    particle's coordinate system to the map's coordinates.
+            map_obs = []
+            for obs in observations:
+                map_obs.append({
+                'x' : p['x'] + obs['x']*cos(p['t']) - obs['y']*sin(p['t']),
+                'y' : p['y'] + obs['y']*sin(p['t']) + obs['y']*cos(p['t'])})
+                
         # 3. Associate each transformed observation to one of the
         #    predicted (selected in Step 1) landmark positions.
         #    Use self.associate() for this purpose - it receives
         #    the predicted landmarks and observations; and returns
         #    the list of landmarks by implementing the nearest-neighbour
         #    association algorithm.
+        
+            if not associate : 
+                continue
+                
+            near_associations = self.associate(associate, map_obs)
+
+            
         # 4. Calculate probability of this set of observations based on
         #    a multi-variate Gaussian distribution (two variables being
         #    the x and y positions with means from associated positions
@@ -92,13 +122,23 @@ class ParticleFilter:
         #    The resulting probability is the product of probabilities
         #    for all the observations.
         # 5. Update the particle's weight by the calculated probability.
+        
+            p['w'] = 1.0
+            p['assoc'] = []
+            
+            for i in range(len(near_associations)):
+                p['w'] *= multivariate_normal([near_associations[i]['x'], near_associations[i]['y']],
+                                              [[std_landmark_x, 0], [0, std_landmark_y]]).pdf([map_obs[i]['x'], map_obs[i]['y']])
+                p['assoc'].append(near_associations[i]['id'])
 
-        pass
+            
+                    
+        
 
     # Resample particles with replacement with probability proportional to
     #   their weights.
     def resample(self):
-        return
+        
         # TODO: Select (possibly with duplicates) the set of particles
         #       that captures the posteior belief distribution, by
         # 1. Drawing particle samples according to their weights.
@@ -107,8 +147,27 @@ class ParticleFilter:
         #    references to mutable objects in Python.
         # Finally, self.particles shall contain the newly drawn set of
         #   particles.
+        set_particles = []
+        M_inv = 1/len(self.particles)
+        r = np.random.uniform(0,M_inv)
+        c = self.particles[0]['w']
+        for idx,p in enumerate(self.particles):
+#             print(idx)
+            U = r + idx * M_inv
+            while U > c:
+                if (idx + 1) < len(self.particles):
+                    idx = idx + 1
+                    c = c + self.particles[idx]['w']
+                else:
+                    break    
+                    
+        set_particles.append(self.particles[idx])
+        self.particles = set_particles
+        
+            
+            
 
-        pass
+        
 
     # Choose the particle with the highest weight (probability)
     def get_best_particle(self):
