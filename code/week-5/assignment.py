@@ -71,10 +71,15 @@ def optimum_policy_2D(grid, init, goal, cost):
             # use in generating the final path policy.
             if (y, x) == goal and value[(t, y, x)] > 0:
                 # TODO: implement code.
-                pass
+                value[(t,y,x)] = 0
+                policy[(t,y,x)] = '*'
+                change = True
+                
             # Try to use simple arithmetic to capture state transitions.
             elif grid[(y, x)] == 0:
                 # TODO: implement code.
+                for f,a in zip(forward, action_name):
+                    
                 pass
     # Now navigate through the policy table to generate a
     # sequence of actions to take to follow the optimal path.
