@@ -13,10 +13,8 @@
    <code>
     if len(observations) == 0: # (1)
         return 0
-    
     elif len(observations) > len(pseudo_ranges): # (2)
         return 0
-    
     else: #(3)
         for i in range(len(observations)):
             distance_prob *= norm_pdf(observations[i], pseudo_ranges[i], stdev**2)
