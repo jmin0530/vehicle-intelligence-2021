@@ -1,33 +1,37 @@
 # Week 3 - Kalman Filters, EKF and Sensor Fusion
-
----
-
-[//]: # (Image References)
-[kalman-result]: ./kalman_filter/graph.png
-[EKF-results]: ./EKF/plot.png
-
-## Kalman Filter Example
-
-In directory [`./kalman_filter`](./kalman_filter), a sample program for a small-scale demonstration of a Kalman filter is provided. Run the following command to test:
+![EKF_Example](https://user-images.githubusercontent.com/72537757/115050293-90100d00-9f16-11eb-8709-820d35aba79a.png)
 
 ```
-$ python testKalman.py
+        # TODO: Implement EKF update for radar measurements
+        # 1. Compute Jacobian Matrix H_j
+        
+        H_j = Jacobian(self.x)
+        px, py, vx, vy = self.x
+        
+        # 2. Calculate S = H_j * P' * H_j^T + R
+        S = np.dot(H_j, np.dot(self.P, H_j.T)) + self.R
+        
+        # 3. Calculate Kalman gain K = H_j * P' * Hj^T + R
+        K = np.dot(self.P, np.dot(H_j.T, np.linalg.inv(S)))
+        
+        # 4. Estimate y = z - h(x')
+        y = z - [sqrt(px**2 + py**2), atan2(py,px), (px*vx + py*vy)/sqrt(px**2 + py**2)]
+        
+        
+        # 5. Normalize phi so that it is between -PI and +PI
+        while y[1] > pi :
+            y[1] = y[1] - 2 * pi
+            
+        while y[1] < -pi:
+            y[1] = y[1] + 2 * pi
+            
+        
+        # 6. Calculate new estimates
+        #    x = x' + K * y
+        #    P = (I - K * H_j) * P
+        self.x = self.x + np.dot(K, y)
+        self.P = self.P - np.dot(K, np.dot(H_j,self.P))
 ```
-
-This program consists of four modules:
-
-* `testKalman.py` is the module you want to run; it initializes a simple Kalman filter and estimates the position and velocity of an object that is assumed to move at a constant speed (but with measurement error).
-* `kalman.py` implements a basic Kalman fitler as described in class.
-* `plot.py` generates a plot in the format shown below.
-* `data.py` provides measurement and ground truth data used in the example.
-
-The result of running this program with test input data is illustrated below:
-
-![Testing of Kalman Filter Example][kalman-result]
-
-Interpretation of the above results is given in the lecture.
-
-In addition, you can run `inputgen.py` to generate your own sample data. It will be interesting to experiment with a number of data sets with different characteristics (mainly in terms of variance, i.e., noise, involved in control and measurement).
 
 ---
 
