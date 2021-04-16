@@ -3,10 +3,10 @@
 1. motion model
 이전 타임 스텝의 모든 위치에서의 사전(prior) 확률을 normal distribution을 이용하여 구한 i위치에서 position으로 이동할 확률을 곱하여 motion probability를 구한다.
 
-<code>
-  for i in range(map_size):
-        position_prob += norm_pdf(position - i, mov ,stdev**2) * priors[i]
-</code>
+  <code>
+    for i in range(map_size):
+          position_prob += norm_pdf(position - i, mov ,stdev**2) * priors[i]
+  </code>
 
 2. observation model
 
