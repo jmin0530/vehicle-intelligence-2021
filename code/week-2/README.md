@@ -9,7 +9,8 @@
   ```
 
 2. observation model
-  먼저 obsevation이 없거나 observation이 pseudo_ranges(ego position보다 앞에있는 각각 landmark들과의 거리)보다 많은 경우에는 observation 확률을 0으로 만든다. 나머지 경우에서는 타임 스텝별 observation과 pseudo_ranges를 이용하여 observation 확률을 구한다.
+  먼저 obsevation이 없거나 observation이 pseudo_ranges(ego position보다 앞에있는 각각 landmark들과의 거리)보다 많은 경우에는 observation 확률을 0으로 만든다. 나머지 경우에서는 타임 스텝별 관측한 수치와 pseudo_ranges를 이용하여 observation 확률을 구한다.
+  
    ```
     if len(observations) == 0: # (1)
         return 0
