@@ -3,14 +3,14 @@
 1. motion model
   이전 타임 스텝의 사전(prior) 확률과 normal distribution을 이용하여 구한 i위치에서 position으로 이동할 확률을 이용하여 motion probability를 구한다.
 
-  '''
+  ```
     for i in range(map_size):
           position_prob += norm_pdf(position - i, mov ,stdev**2) * priors[i]
-  '''
+  ```
 
 2. observation model
   먼저 obsevation이 없거나 observation이 pseudo_ranges(ego position보다 앞에있는 각각 landmark들과의 거리)보다 많은 경우에는 observation 확률을 0으로 만든다. 나머지 경우에서는 타임 스텝별 observation과 pseudo_ranges를 이용하여 observation 확률을 구한다.
-   '''
+   ```
     if len(observations) == 0: # (1)
         return 0
         
@@ -20,7 +20,7 @@
     else: #(3)
         for i in range(len(observations)):
             distance_prob *= norm_pdf(observations[i], pseudo_ranges[i], stdev**2)
-   '''
+   ```
 
 
 
