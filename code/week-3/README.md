@@ -1,4 +1,7 @@
 # Week 3 - Kalman Filters, EKF and Sensor Fusion
+Extended Kalman Filter는 기존의 Kalman Filter가 선형 시스템에서만 구현이 가능한 것을 극복하기 위하여 비선형모델을 평균 근처에서 선형으로 근사시키는 방법을 이용해 비선형 모델에서도 구현할 수 있도록 하는 방법이다. 그 기울기는 곧 편미분이므로 Jacobian Matrix로 gradient를 나타내고 그 matrix를 이용하여 Kalman Filter에 적용시킨다.
+
+코드를 구현한 후 결과 plot은 아래와 같으며 그 아래에 코드를 나타내도록 했다.
 ![EKF_Example](https://user-images.githubusercontent.com/72537757/115050293-90100d00-9f16-11eb-8709-820d35aba79a.png)
 
 ```
