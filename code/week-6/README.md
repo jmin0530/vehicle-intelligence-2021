@@ -40,35 +40,22 @@ Under the directory [./BP](./BP), you are given four Python modules:
 * `vehicle.py`: `class Vehicle` implements the states of a vehicle and its transition, along with the vehicle's dynamics based on a simple kinematic assumption. Note that a vehicle's trajectory is represented by two instances of object of this class, where the first one gives the current state and the second one predicts the state that the vehicle is going to be in after one timestep.
 * `cost_functions.py`: implementation of cost functions governing the state transition of the ego vehicle. The main job required for your assignment is to provide an adequate combination of cost functions by implementing them in this module.
 
-### Task 1
+# Assignment1 result
+과제 1은 Gaussian Naive Bayes를 이용하여 주어진 데이터를 왼쪽, 오른쪽, 유지 3개의 방향마다 평균과 분산을 구하는 과정을 train 함수에서 구현하고, 훈련시킨 평균과 분산을 이용하여 예측을 하도록 하는 predict 함수에서 구현하도록 하는 것이다.
 
-Implement the method `choose_next_state()` in `vehicle.py`. It should
+먼저 train 함수는 데이터를 불러와서 3개의 방향을 가지는 딕셔너리를 이용했다. 3개의 방향별로 데이터를 정리했으면 방향마다 평균과 분산을 numpy안에 있는 mean과 std함수를 이용하여 평균과 분산을 구했다.
+```
+![image](https://user-images.githubusercontent.com/72537757/117480789-00053680-af9d-11eb-93b4-95ae3ac97ac2.png)
 
-* determine which state transitions are possible from the current state (`successor_states()` function in the same module will be helpful),
-* calculate cost for each state transition using the trajectory generated for each behaviour, and
-* select the minimum cost trajectory and return it.
+```
 
-Note that you must return a planned trajectory (as described above) instead of the state that the vehicle is going to be in.
+그 다음 predict 함수는 train에서 훈련시킨 데이터를 이용하여 가우스 함수를 연속적으로 곱하여 확률을 구한 후 3개의 방향마다 나온 확률 중에서 가장 큰 값을 가지는 방향을 출력하도록 구현했다.
+```
+![image](https://user-images.githubusercontent.com/72537757/117480960-422e7800-af9d-11eb-9422-7ec25bde1c74.png)
 
-### Task 2
+```
+prediction.py를 실행하여 예측한 결과는 다음과 같다. 데이터를 불러오는 과정에서 전처리를 안하고 바로 사용하도록 구현했는데 만약 train에서 데이터를 불러올 때 전처리 과정을 거쳤다면 정확도는 조금 더 올랐을 것으로 예상된다.
+```
+![image](https://user-images.githubusercontent.com/72537757/117481145-7e61d880-af9d-11eb-961d-bbb93b8bc45b.png)
+```
 
-In `cost_functions.py`, templates for two different cost functions (`goal_distance_cost()` and `inefficiency_cost()`) are given. They are intended to capture the cost of the trajectory in terms of
-
-* the lateral distance of the vehicle's lane selection from the goal position, and
-* the time expected to be taken to reach the goal (because of different lane speeds),
-
-respectively.
-
-Note that the range of cost functions should be carefully defined so that they can be combined by a weighted sum, which is done in the function `calculate_cost()` (to be used in `choose_next_state()` as described above). In computing the weighted sum, a set of weights are used. For example, `REACH_GOAL` and `EFFICIENCY` are already defined (but initialized to zero values). You are going to find out a good combination of weights by an empirical manner.
-
-You are highly encouraged to experiment with your own additional cost functions. In implementing cost functions, a trajectory's summary (defined in `TrajectoryData` and given by `get_helper_data()`) can be useful.
-
-You are also invited to experiment with a number of different simulation settings, especially in terms of
-
-* number of lanes
-* lane speed settings (all non-ego vehicles follow these)
-* traffic density (governing the number of non-ego vehicles)
-
-and so on.
-
-Remember that our state machine should be geared towards reaching the goal in an *efficient* manner. Try to compare a behaviour that switches to the goal lane as soon as possible (note that the goal position is in the slowest lane in the given setting) and one that follows a faster lane and move to the goal lane as the remaining distance decreases. Observe different behaviour taken by the ego vehicle when different weights are given to different cost functions, and also when other cost metrics (additional cost functions) are used.
