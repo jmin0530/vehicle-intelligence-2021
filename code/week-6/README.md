@@ -45,17 +45,54 @@ Under the directory [./BP](./BP), you are given four Python modules:
 
 먼저 train 함수는 데이터를 불러와서 3개의 방향을 가지는 딕셔너리를 이용했다. 3개의 방향별로 데이터를 정리했으면 방향마다 평균과 분산을 numpy안에 있는 mean과 std함수를 이용하여 평균과 분산을 구했다.
 ```
-![image](https://user-images.githubusercontent.com/72537757/117480789-00053680-af9d-11eb-93b4-95ae3ac97ac2.png)
+    def train(self, X, Y):
+        '''
+        Collect the data and calculate mean and standard variation
+        for each class. Record them for later use in prediction.
+        '''
+        # TODO: implement code.
+        
+        # 평균과 표준편차 저장을 위한 딕셔너리 선언
+        self.mean = {}
+        self.std = {}
+        
+        # 방향별로 저장을 위한 데이터 딕셔너리
+        datas = {'left' : [[] for i in range(4)],'keep':[[] for i in range(4)], 'right':[[] for i in range(4)]}
+        
+        # X안 데이터마다 대응되는 라벨(3개의 방향)별로 데이터를 저장하도록 한다.
+        for x,y in zip(X,Y):
+            x = self.process_vars(x)
+            for i,v in enumerate(x):
+                datas[y][i].append(v)
 
 ```
 
 그 다음 predict 함수는 train에서 훈련시킨 데이터를 이용하여 가우스 함수를 연속적으로 곱하여 확률을 구한 후 3개의 방향마다 나온 확률 중에서 가장 큰 값을 가지는 방향을 출력하도록 구현했다.
 ```
-![image](https://user-images.githubusercontent.com/72537757/117480960-422e7800-af9d-11eb-9422-7ec25bde1c74.png)
+    def predict(self, observation):
+        '''
+        Calculate Gaussian probability for each variable based on the
+        mean and standard deviation calculated in the training process.
+        Multiply all the probabilities for variables, and then
+        normalize them to get conditional probabilities.
+        Return the label for the highest conditional probability.
+        '''
+        # TODO: implement code.
+        highest_prob = 0
+        observation = self.process_vars(observation)
+        for direction in self.classes:
+            for obs, mu, sig in zip(observation, self.mean[direction], self.std[direction]):
+                p = 1
+                p *= gaussian_prob(obs, mu, sig)
+                if p > highest_prob:
+                    highest_prob = p
+                    best_direction = direction
+
+        return best_direction
 
 ```
 prediction.py를 실행하여 예측한 결과는 다음과 같다. 데이터를 불러오는 과정에서 전처리를 안하고 바로 사용하도록 구현했는데 만약 train에서 데이터를 불러올 때 전처리 과정을 거쳤다면 정확도는 조금 더 올랐을 것으로 예상된다.
 ```
-![image](https://user-images.githubusercontent.com/72537757/117481145-7e61d880-af9d-11eb-961d-bbb93b8bc45b.png)
+![제목 없음](https://user-images.githubusercontent.com/72537757/117481299-c3860a80-af9d-11eb-8246-eee7cbc75ce3.png)
 ```
 
