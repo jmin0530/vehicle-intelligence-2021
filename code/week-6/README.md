@@ -95,3 +95,36 @@ prediction.py를 실행하여 예측한 결과는 다음과 같다. 데이터를
 
 ![ex_screenshot](./img/result1.png)
 
+# Assignment2 result
+
+과제 2는 간단한behaviour planner를 구현하는 것이다.
+먼저 vehicle.py파일 안에 choose_next_state함수를 구현하는 것이다. 이 함수는 predictions를 입력으로 받아 다음 최적의 trajectory를 출력해낸다. 현재 상태에서 다음에 어떤 상태로 움직일 수 있는지 찾아내고 그러한 상태들을 이용해 궤적을 생성한 후 cost를 계산한다. 그래서 최종적으로 계산한 cost들 중에서 가장 작은 cost가 드는 궤적을 선택하도록 한다.
+```
+# TODO: implement state transition function based on the cost
+        #       associated with each transition.
+        possible_success_states = self.successor_states()
+        costs = []
+        for state in possible_success_states:
+            traj = self.generate_trajectory(state, predictions)
+            cost_for_state = calculate_cost(self, traj, predictions)
+            costs.append({'state' : state, 'cost' : cost_for_state})
+            
+        best_next_state = None
+        min_cost=9999999
+        
+        for x in costs:
+            if x['cost'] < min_cost:
+                min_cost = x['cost']
+                best_next_state = x['state']
+                
+        next_traj = self.generate_trajectory(best_next_state, predictions)
+                
+        
+
+        # Note that the return value is a trajectory, where a trajectory
+        # is a list of Vehicle objects with two elements.
+        return next_traj
+```
+
+
+
