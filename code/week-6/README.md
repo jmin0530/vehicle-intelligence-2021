@@ -93,6 +93,6 @@ Under the directory [./BP](./BP), you are given four Python modules:
 ```
 prediction.py를 실행하여 예측한 결과는 다음과 같다. 데이터를 불러오는 과정에서 전처리를 안하고 바로 사용하도록 구현했는데 만약 train에서 데이터를 불러올 때 전처리 과정을 거쳤다면 정확도는 조금 더 올랐을 것으로 예상된다.
 ```
-![제목 없음](https://user-images.githubusercontent.com/72537757/117481299-c3860a80-af9d-11eb-8246-eee7cbc75ce3.png)
+![ex_screenshot](./img/result1.png)
 ```
 
