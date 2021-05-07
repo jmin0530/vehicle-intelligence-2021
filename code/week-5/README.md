@@ -14,13 +14,13 @@ The assignmemt extends `policy.py` in two aspects:
 
 This example is intended to illustrate the algorithm's capability of generating an alternative (detouring) path when left turns are penalized by a higher cost than the other two possible actions. When run with the settings defined in `assignment.py` without modification, a successful implementation shall generate the following output,
 
-```
+"""
 [[' ', ' ', ' ', 'R', '#', 'R'],
  [' ', ' ', ' ', '#', ' ', '#'],
  ['*', '#', '#', '#', '#', 'R'],
  [' ', ' ', ' ', '#', ' ', ' '],
  [' ', ' ', ' ', '#', ' ', ' ']]
-```
+"""
 
 because of the prohibitively high cost associated with a left turn.
 
@@ -30,6 +30,7 @@ You are highly encouraged to experiment with different (more complex) maps and d
 
 이번 과제는 동적프로그래밍을 이용하여 A star 알고리즘에서 변수 theta를 추가하여 cost에 따른 최적의 경로를 출력할 수 있도록 코드를 구성하는 것이다. 여기서 theta는 차량이 어느 방향으로 향하고 있는지 나타내는 orientation을 말한다.
 먼저 TODO 1에서는 현재 위치에서 다음 위치로 갈 수 있는 모든 경우를 고려 했을 때 cost가 가장 적은 방향으로 가게 하기 위한 value 행렬을 갱신하고 이에 따른 action을 저장하는 policy행렬을 갱신하도록 했다.
+
 """
             elif grid[(y, x)] == 0:
                 # TODO 1:
