@@ -126,5 +126,9 @@ prediction.py를 실행하여 예측한 결과는 다음과 같다. 데이터를
         return next_traj
 ```
 
+시험 결과는 다음과 같다.
+
+![ex_screenshot](./img/result2.png)
+
 
 
