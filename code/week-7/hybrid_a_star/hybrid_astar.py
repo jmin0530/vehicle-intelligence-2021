@@ -31,13 +31,36 @@ class HybridAStar:
 
         # Consider a discrete selection of steering angles.
         for delta_t in []:
-            pass
             # TODO: implement the trajectory generation based on
             # a simple bicycle model.
             # Let theta2 be the vehicle's heading (in radian)
             # between 0 and 2 * PI.
             # Check validity and then add to the next_states list.
+            delta = np.pi/180.0 * delta_t
+            # delta = delta_t * np.pi/180.0
+            omega = self.speed / self.length * np.tan(delta)
+            x2 = x + self.speed * np.cos(theta)
+            y2 = y + self.speed * np.sin(theta)
+            theta2 = theta + omega
 
+            if theta2 < 0:
+                theta2 += 2*np.pi
+            elif theta2 > 2*np.pi:
+                theta2 -= 2*np.pi 
+
+            if 0 <= self.idx(x2)  \
+              and self.idx(x2) < self.dim[1] \
+              and 0 <= self.idx(y2) \
+              and self.idx(y2) < self.dim[2]:
+                f2 = g2 + self.heuristic(x2, y2, goal)
+                current = {
+              'f': f2,
+              'g': g2,
+              'x': x2,
+              'y': y2,
+              't': theta2,                
+            }
+                next_states.append(current)
         return next_states
 
     # Perform a breadth-first search based on the Hybrid A* algorithm.
@@ -94,8 +117,13 @@ class HybridAStar:
         # given theta represented in radian. Note that the calculation
         # should partition 360 degrees (2 * PI rad) into different
         # cells whose number is given by NUM_THETA_CELLS.
-        return 0
+        angle = theta * (180/np.pi)
+        interval = 360 / self.NUM_THETA_CELLS
+        stack_num = angle // interval
 
+        if stack_num == self.NUM_THETA_CELLS:
+            stack_num = 0
+        return int(stack_num)
     # Calculate the index of the grid cell based on the vehicle's position.
     def idx(self, pos):
         # We simply assume that each of the grid cell is the size 1 X 1.
@@ -104,7 +132,9 @@ class HybridAStar:
     # Implement a heuristic function to be used in the hybrid A* algorithm.
     def heuristic(self, x, y, goal):
         # TODO: implement a heuristic function.
-        return 0
+        L2_distance = np.sqrt((goal[0]-x)*(goal[0]-x)
+                             + (goal[1]-y)*(goal[1]-y))
+        return L2_distance
 
     # Reconstruct the path taken by the hybrid A* algorithm.
     def reconstruct_path(self, start, goal):
