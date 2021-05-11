@@ -102,7 +102,28 @@ class HybridAStar:
             # Compute reachable new states and process each of them.
             next_states = self.expand(curr, goal)
             for n in next_states:
-                pass
+                x2 = self.idx(n['x'])
+                y2 = self.idx(n['y'])
+                stack = self.theta_to_stack_num(n['t'])
+              
+                if grid[x2][y2] == 0:
+                    distance_x = abs(self.idx(x) - x2)
+                    distance_y = abs(self.idx(y) - y2)
+                    min_x = min(self.idx(x), x2)
+                    min_y = min(self.idx(y), y2)
+                
+                    flag = True
+
+                for dist_x in range(distance_x+1):
+                    for dist_y in range(distance_y+1):
+                        if grid[min_x+dist_x][min_y+dist_y] != 0:
+                            flag = False
+                
+                if flag and self.closed[stack][x2][y2] == 0:
+                    self.closed[stack][x2][y2] = 1
+                    total_closed += 1
+                    self.came_from[stack][x2][y2] = curr
+                    opened.append(n)
         else:
             # We weren't able to find a valid path; this does not necessarily
             # mean there is no feasible trajectory to reach the goal.
